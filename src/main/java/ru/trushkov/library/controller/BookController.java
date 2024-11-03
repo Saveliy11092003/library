@@ -6,15 +6,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.trushkov.library.model.Response;
 import ru.trushkov.library.model.dto.AuthorDto;
-import ru.trushkov.library.service.AuthorService;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/authors")
-public class AuthorController {
-    private final AuthorService authorService;
+@RequestMapping("/api/v1/books")
+public class BookController {
 
     @PostMapping()
     public ResponseEntity<AuthorDto> createAuthor(@RequestBody @Valid AuthorDto authorDto) {
