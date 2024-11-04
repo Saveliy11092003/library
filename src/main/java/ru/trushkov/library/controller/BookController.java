@@ -5,7 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.trushkov.library.model.Response;
-import ru.trushkov.library.model.dto.AuthorDto;
+import ru.trushkov.library.model.dto.BookDto;
+import ru.trushkov.library.service.BookService;
 
 import java.util.List;
 
@@ -13,33 +14,34 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/books")
 public class BookController {
+    private final BookService bookService;
 
     @PostMapping()
-    public ResponseEntity<AuthorDto> createAuthor(@RequestBody @Valid AuthorDto authorDto) {
-        authorService.createAuthor(authorDto);
-        return Response.sendOk(authorDto);
+    public ResponseEntity<BookDto> createBook(@RequestBody @Valid BookDto bookDto) {
+        bookService.createBook(bookDto);
+        return Response.sendOk(bookDto);
     }
 
     @GetMapping("/{id}")
-    public AuthorDto getAuthorById(@PathVariable("id") Integer id) {
-        return authorService.getAuthor(id);
+    public BookDto getBookById(@PathVariable("id") Integer id) {
+        return bookService.getBook(id);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AuthorDto> updateAuthor(@PathVariable("id") Integer id, @RequestBody @Valid AuthorDto authorDto) {
-        authorService.updateAuthor(authorDto, id);
-        return Response.sendOk(authorDto);
+    public ResponseEntity<BookDto> updateBook(@PathVariable("id") Integer id, @RequestBody @Valid BookDto bookDto) {
+        bookService.updateBook(bookDto, id);
+        return Response.sendOk(bookDto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAuthor(@PathVariable("id") Integer id) {
-        authorService.deleteAuthor(id);
+    public ResponseEntity<Void> deleteBook(@PathVariable("id") Integer id) {
+        bookService.deleteBook(id);
         return Response.sendNoContent();
     }
 
     @GetMapping()
-    public ResponseEntity<List<AuthorDto>> getAllAuthors() {
-        return Response.sendOk(authorService.getAllAuthors());
+    public ResponseEntity<List<BookDto>> getAllBooks() {
+        return Response.sendOk(bookService.getAllBooks());
     }
 
 }

@@ -23,7 +23,7 @@ public class Book {
     @Column(name = "published_date")
     private String publishedDate;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "author_id")
     private Author author;
 }
