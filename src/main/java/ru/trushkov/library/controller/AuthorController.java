@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.trushkov.library.model.Response;
 import ru.trushkov.library.model.dto.AuthorDto;
+import ru.trushkov.library.service.AuthorMessageSender;
 import ru.trushkov.library.service.AuthorService;
 
 import java.util.List;
@@ -15,11 +16,12 @@ import java.util.List;
 @RequestMapping("/api/v1/authors")
 public class AuthorController {
     private final AuthorService authorService;
+    private final AuthorMessageSender authorMessageSender;
 
     @PostMapping()
-    public ResponseEntity<AuthorDto> createAuthor(@RequestBody @Valid AuthorDto authorDto) {
-        authorService.createAuthor(authorDto);
-        return Response.sendOk(authorDto);
+    public ResponseEntity<Void> createAuthor(@RequestBody @Valid AuthorDto authorDto) {
+        authorMessageSender.sendMessageCreate(authorDto);
+        return Response.sendCreated();
     }
 
     @GetMapping("/{id}")
@@ -29,13 +31,13 @@ public class AuthorController {
 
     @PutMapping("/{id}")
     public ResponseEntity<AuthorDto> updateAuthor(@PathVariable("id") Integer id, @RequestBody @Valid AuthorDto authorDto) {
-        authorService.updateAuthor(authorDto, id);
+        authorMessageSender.sendMessageUpdate(authorDto, id);
         return Response.sendOk(authorDto);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAuthor(@PathVariable("id") Integer id) {
-        authorService.deleteAuthor(id);
+        authorMessageSender.sendMessageDelete(id);
         return Response.sendNoContent();
     }
 
