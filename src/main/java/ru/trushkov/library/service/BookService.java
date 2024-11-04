@@ -2,6 +2,7 @@ package ru.trushkov.library.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 import ru.trushkov.library.mapper.BookMapper;
 import ru.trushkov.library.model.dto.BookDto;
@@ -20,10 +21,10 @@ public class BookService {
     private final BookMapper bookMapper;
     private final AuthorRepository authorRepository;
 
+    @RabbitListener(queues = "${queue.create.book.name}")
     public void createBook(BookDto bookDto) {
         Book book = bookMapper.bookDtoToBook(bookDto);
-        Book savedBook = bookRepository.save(book);
-        bookDto.setId(savedBook.getId());
+        bookRepository.save(book);
     }
 
     public BookDto getBook(Integer id) {
@@ -33,17 +34,18 @@ public class BookService {
     }
 
     @Transactional
-    public void updateBook(BookDto bookDto, Integer id) {
-        Book book = bookRepository.findById(id)
+    @RabbitListener(queues = "${queue.update.book.name}")
+    public void updateBook(BookDto bookDto) {
+        Book book = bookRepository.findById(bookDto.getId())
                 .orElseThrow(() -> new RuntimeException("Book with this id does not exist"));
         bookMapper.updateBookFromBookDto(bookDto, book);
         Author author = authorRepository.findById(bookDto.getAuthorId())
                 .orElseThrow(() -> new RuntimeException("Author with this id does not exist"));
         book.setAuthor(author);
         bookRepository.save(book);
-        bookDto.setId(id);
     }
 
+    @RabbitListener(queues = "${queue.delete.book.name}")
     public void deleteBook(Integer id) {
         bookRepository.deleteById(id);
     }

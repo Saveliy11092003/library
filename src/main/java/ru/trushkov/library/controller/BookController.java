@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.trushkov.library.model.Response;
 import ru.trushkov.library.model.dto.BookDto;
+import ru.trushkov.library.service.BookMessageSender;
 import ru.trushkov.library.service.BookService;
 
 import java.util.List;
@@ -15,11 +16,12 @@ import java.util.List;
 @RequestMapping("/api/v1/books")
 public class BookController {
     private final BookService bookService;
+    private final BookMessageSender bookMessageSender;
 
     @PostMapping()
-    public ResponseEntity<BookDto> createBook(@RequestBody @Valid BookDto bookDto) {
-        bookService.createBook(bookDto);
-        return Response.sendOk(bookDto);
+    public ResponseEntity<Void> createBook(@RequestBody @Valid BookDto bookDto) {
+        bookMessageSender.sendMessageCreate(bookDto);
+        return Response.sendCreated();
     }
 
     @GetMapping("/{id}")
@@ -29,13 +31,13 @@ public class BookController {
 
     @PutMapping("/{id}")
     public ResponseEntity<BookDto> updateBook(@PathVariable("id") Integer id, @RequestBody @Valid BookDto bookDto) {
-        bookService.updateBook(bookDto, id);
+        bookMessageSender.sendMessageUpdate(bookDto, id);
         return Response.sendOk(bookDto);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable("id") Integer id) {
-        bookService.deleteBook(id);
+        bookMessageSender.sendMessageDelete(id);
         return Response.sendNoContent();
     }
 

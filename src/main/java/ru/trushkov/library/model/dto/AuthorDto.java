@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 import jakarta.validation.constraints.NotNull;
 
+import java.io.Serializable;
+
 @Builder
 @Getter
 @Setter
@@ -12,7 +14,7 @@ import jakarta.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class AuthorDto {
+public class AuthorDto implements Serializable {
 
     private Integer id;
 
